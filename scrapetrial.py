@@ -219,10 +219,9 @@ def save_to_file(foldername, filename, brand=False):
     pattern = "\d{1,}\,\d{3,}\.\d{2}|\d{3}\.\d{2}|\d{1,}\,\d{3,}|\d{2,}|\d{2,}\.\d{2}"
     
     dataframe = pd.concat([pd.read_csv(file) for file in os.listdir() if file.endswith('.csv')])
+    dataframe.dropna(inplace=True)
     if brand:
         dataframe['brand'] = dataframe['brand'].apply(lambda x: x.replace(x, foldername.title()))
-
-    dataframe.dropna(inplace=True)
     dataframe['brand_price'] = dataframe['brand_price'].apply(lambda x: float("".join((re.findall(string=x, pattern=pattern)[-1]).split(','))))
     try:
         os.makedirs(f"selenium/cleaner_output/{foldername}")
