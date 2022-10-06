@@ -220,6 +220,7 @@ def save_to_file(foldername, filename, brand=False):
     
     dataframe = pd.concat([pd.read_csv(file) for file in os.listdir() if file.endswith('.csv')])
     dataframe.dropna(inplace=True)
+    dataframe.drop_duplicates(inplace=True)
     if brand:
         dataframe['brand'] = dataframe['brand'].apply(lambda x: x.replace(x, foldername.title()))
     dataframe['brand_price'] = dataframe['brand_price'].apply(lambda x: float("".join((re.findall(string=x, pattern=pattern)[-1]).split(','))))
