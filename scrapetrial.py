@@ -128,7 +128,7 @@ class Scraper():
             .key_down(Keys.END)\
             .perform()
     
-    def follow_links(self, path=[], press_end=False):
+    def follow_links(self, path=None, press_end=False):
 
         """follow and scrape the extracted links from extract links function"""
 
