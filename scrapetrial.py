@@ -7,8 +7,8 @@ from selenium.webdriver import Keys, ActionChains
 import pandas as pd
 from urllib.parse import urlparse, urljoin
 import time
-import os
-from cleaner import save_to_file, send_to_trash
+import os, shutil
+import re
 
 
 class Scraper(): 
@@ -209,3 +209,35 @@ class Scraper():
         with open(f"{self.site_name}.txt", "w") as write:
             write.write(str(self.links))
             write.close()              
+
+
+
+"""A functions to clean scraped csv file from Scraper object"""
+
+def save_to_file(foldername, filename, brand=False):
+
+    pattern = "\d{1,}\,\d{3,}\.\d{2}|\d{3}\.\d{2}|\d{1,}\,\d{3,}|\d{2,}|\d{2,}\.\d{2}"
+    
+    dataframe = pd.concat([pd.read_csv(file) for file in os.listdir() if file.endswith('.csv')])
+    if brand:
+        dataframe['brand'] = dataframe['brand'].apply(lambda x: x.replace(x, foldername.title()))
+
+    dataframe.dropna(inplace=True)
+    dataframe['brand_price'] = dataframe['brand_price'].apply(lambda x: float("".join((re.findall(string=x, pattern=pattern)[-1]).split(','))))
+    try:
+        os.makedirs(f"selenium/cleaner_output/{foldername}")
+    except FileExistsError:
+        "File Already Exists"
+        
+    dataframe.sort_values(by="brand_price").to_csv(f"selenium/cleaner_output/{foldername}/{filename}.csv", index=False)
+
+def send_to_trash(destination):
+    files = [file for file in os.listdir() if file.endswith('.csv') or file.endswith('.txt')]
+    try:
+        os.makedirs(f"selenium/trash/{destination}")
+    
+    except FileExistsError:
+        "File Already Exist"
+    for file in files: 
+        shutil.move(file, f"selenium/trash/{destination}")
+
