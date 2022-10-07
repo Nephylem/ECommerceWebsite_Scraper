@@ -10,17 +10,16 @@ import time
 import os, shutil
 import re
 
-
 class Scraper(): 
     browser = Chrome()
     """Ecommerce website scraper object"""
 
     def __init__(self, 
-                brand_selector, 
-                info_selector, 
-                price_selector, 
-                link_selector, 
-                site_name, 
+                brand_selector=None, 
+                info_selector=None, 
+                price_selector=None, 
+                link_selector=None, 
+                site_name="", 
                 next_page_selector=None, 
                 url=""): 
 
@@ -37,6 +36,7 @@ class Scraper():
         self.links = set()
         
         self.browser_wait = WebDriverWait(self.browser, 10)
+        self.basepath = os.path.dirname(os.path.abspath(__name__))
 
     def load_url(self, url=""):
         url = url or self.url
@@ -107,7 +107,11 @@ class Scraper():
         site_name = self.site_name
         item = self.items['product list']
         
-        pd.DataFrame(item).to_csv(f"{site_name}_{self.file_name}.csv", index=False)
+        save_path = os.path.join(self.basepath, f"output/{site_name}")
+        
+        os.makedirs(save_path, exist_ok=True)
+        pd.DataFrame(item).to_csv(os.path.join(save_path + f"/{self.file_name}.csv"), index=False)
+        
         
         print(f"scrapped {self.browser.current_url}")
         print("*" * 100)
@@ -240,4 +244,6 @@ def send_to_trash(destination):
         "File Already Exist"
     for file in files: 
         shutil.move(file, f"selenium/trash/{destination}")
+
+
 
