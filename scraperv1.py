@@ -207,7 +207,7 @@ class Scraper():
 
         print("Links length: " + str(len(self.links)))
 
-        path_to_text = os.path.join(BASE_PATH, f"{self.site_name}/trash/{self.file_name}.txt")
+        path_to_text = os.path.join(BASE_PATH, f"{self.site_name}/trash/{self.site_name}.txt")
         with open(path_to_text, "w") as write:
             write.write(str(self.links))
             print(f"{self.site_name}.txt written..")
@@ -217,7 +217,7 @@ class Scraper():
         for _ in range(iteration):
             self.check_each_link()
 
-        path_to_text = os.path.join(BASE_PATH, f"{self.site_name}/trash/{self.file_name}.txt")
+        path_to_text = os.path.join(BASE_PATH, f"{self.site_name}/trash/{self.site_name}.txt")
         with open(path_to_text, "w") as write:
             write.write(str(self.links))
             write.close()              
