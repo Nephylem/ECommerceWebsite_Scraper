@@ -77,6 +77,8 @@ class Scraper():
 
     def next_page(self, xpath=False):
         """press site next page"""
+
+        """this code is in development phase, need to finalize yet"""
         flag = True
         if xpath:
             while flag: 
@@ -222,8 +224,7 @@ class Scraper():
 
 
 
-"""A functions to clean scraped csv file from Scraper object"""
-
+"""A function to clean scraped csv file from Scraper object"""
 
 
 def concat_all_csv(foldername, filename, brand=False):
