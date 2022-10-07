@@ -108,9 +108,9 @@ class Scraper():
         item = self.items['product list']
         
         save_path = os.path.join(self.basepath, f"output/{site_name}")
-        
+
         os.makedirs(save_path, exist_ok=True)
-        pd.DataFrame(item).to_csv(os.path.join(save_path + f"/{self.file_name}.csv"), index=False)
+        pd.DataFrame(item).to_csv(os.path.join(save_path + f"{self.file_name}.csv"), index=False)
         
         
         print(f"scrapped {self.browser.current_url}")
@@ -201,7 +201,9 @@ class Scraper():
             self.links.add(i)
 
         print("Links length: " + str(len(self.links)))
-        with open(f"{self.site_name}.txt", "w") as write:
+
+        path_to_text = os.path.join(self.basepath, f"{self.site_name}/{self.file_name}.txt")
+        with open(path_to_text, "w") as write:
             write.write(str(self.links))
             print(f"{self.site_name}.txt written..")
             write.close()              
@@ -209,8 +211,9 @@ class Scraper():
     def extract_more_links(self, iteration=5):
         for _ in range(iteration):
             self.check_each_link()
-        
-        with open(f"{self.site_name}.txt", "w") as write:
+
+        path_to_text = os.path.join(self.basepath, f"{self.site_name}/{self.file_name}.txt")
+        with open(path_to_text, "w") as write:
             write.write(str(self.links))
             write.close()              
 
