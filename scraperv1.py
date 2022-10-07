@@ -35,9 +35,9 @@ class Scraper():
         self.link_selector = link_selector
 
         self.selector = ""
+        self.file_name = ""
 
         self.links = set()
-        
         self.browser_wait = WebDriverWait(self.browser, 10)
         
 
