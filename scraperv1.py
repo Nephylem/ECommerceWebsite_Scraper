@@ -229,7 +229,7 @@ class Scraper():
 
 def concat_all_csv(foldername, filename, brand=False):
 
-    pattern = "\d{1,}\,\d{3,}\.\d{2}|\d{3}\.\d{2}|\d{1,}\,\d{3,}|\d{2,}|\d{2,}\.\d{2}"
+    pattern = "\d{1,}\,\d{3,}\.\d{2}|\d{3}\.\d{2}|\d{1,}\,\d{3,}|\d{2,}|\d{2,}\.\d{2}|\d"
     trash_path = os.path.join(BASE_PATH, f"output/{foldername}/trash")
     csv_abspath = [os.path.join(trash_path, file) for file in os.listdir(trash_path)]
     save_to_path = os.path.join(BASE_PATH, f"output/{foldername}/{filename}.csv")
