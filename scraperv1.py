@@ -10,6 +10,9 @@ import time
 import os, shutil
 import re
 
+
+BASE_PATH = os.path.dirname(os.path.abspath(__name__))
+
 class Scraper(): 
     browser = Chrome()
     """Ecommerce website scraper object"""
@@ -36,7 +39,7 @@ class Scraper():
         self.links = set()
         
         self.browser_wait = WebDriverWait(self.browser, 10)
-        self.basepath = os.path.dirname(os.path.abspath(__name__))
+        
 
     def load_url(self, url=""):
         url = url or self.url
@@ -107,10 +110,10 @@ class Scraper():
         site_name = self.site_name
         item = self.items['product list']
         
-        save_path = os.path.join(self.basepath, f"output/{site_name}")
+        save_path = os.path.join(BASE_PATH, f"output/{site_name}/trash")
 
         os.makedirs(save_path, exist_ok=True)
-        pd.DataFrame(item).to_csv(os.path.join(save_path + f"{self.file_name}.csv"), index=False)
+        pd.DataFrame(item).to_csv(os.path.join(save_path, f"{self.file_name}.csv"), index=False)
         
         
         print(f"scrapped {self.browser.current_url}")
@@ -202,7 +205,7 @@ class Scraper():
 
         print("Links length: " + str(len(self.links)))
 
-        path_to_text = os.path.join(self.basepath, f"{self.site_name}/{self.file_name}.txt")
+        path_to_text = os.path.join(BASE_PATH, f"{self.site_name}/trash/{self.file_name}.txt")
         with open(path_to_text, "w") as write:
             write.write(str(self.links))
             print(f"{self.site_name}.txt written..")
@@ -212,7 +215,7 @@ class Scraper():
         for _ in range(iteration):
             self.check_each_link()
 
-        path_to_text = os.path.join(self.basepath, f"{self.site_name}/{self.file_name}.txt")
+        path_to_text = os.path.join(BASE_PATH, f"{self.site_name}/trash/{self.file_name}.txt")
         with open(path_to_text, "w") as write:
             write.write(str(self.links))
             write.close()              
@@ -221,32 +224,24 @@ class Scraper():
 
 """A functions to clean scraped csv file from Scraper object"""
 
-def save_to_file(foldername, filename, brand=False):
+
+
+def concat_all_csv(foldername, filename, brand=False):
 
     pattern = "\d{1,}\,\d{3,}\.\d{2}|\d{3}\.\d{2}|\d{1,}\,\d{3,}|\d{2,}|\d{2,}\.\d{2}"
-    
-    dataframe = pd.concat([pd.read_csv(file) for file in os.listdir() if file.endswith('.csv')])
+    trash_path = os.path.join(BASE_PATH, f"output/{foldername}/trash")
+    csv_abspath = [os.path.join(trash_path, file) for file in os.listdir(trash_path)]
+    save_to_path = os.path.join(BASE_PATH, f"output/{foldername}/{filename}.csv")
+
+    dataframe = pd.concat([pd.read_csv(file) for file in csv_abspath if file.endswith('.csv')])
     dataframe.dropna(inplace=True)
     dataframe.drop_duplicates(inplace=True)
     if brand:
         dataframe['brand'] = dataframe['brand'].apply(lambda x: x.replace(x, foldername.title()))
     dataframe['brand_price'] = dataframe['brand_price'].apply(lambda x: float("".join((re.findall(string=x, pattern=pattern)[-1]).split(','))))
-    try:
-        os.makedirs(f"selenium/cleaner_output/{foldername}")
-    except FileExistsError:
-        "File Already Exists"
-        
-    dataframe.sort_values(by="brand_price").to_csv(f"selenium/cleaner_output/{foldername}/{filename}.csv", index=False)
-
-def send_to_trash(destination):
-    files = [file for file in os.listdir() if file.endswith('.csv') or file.endswith('.txt')]
-    try:
-        os.makedirs(f"selenium/trash/{destination}")
     
-    except FileExistsError:
-        "File Already Exist"
-    for file in files: 
-        shutil.move(file, f"selenium/trash/{destination}")
+        
+    dataframe.sort_values(by="brand_price").to_csv(save_to_path, index=False)
 
 
 
