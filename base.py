@@ -1,17 +1,16 @@
-from scraperv1 import Scraper, save_to_file, send_to_trash
-import os 
+from scraperv1 import Scraper, concat_all_csv
 
 
 """WRITE YOUR CODE HERE"""
 
-brand_selector = 'div[class="content-description"] div[class="content-title"]'
-info_selector = 'div[class="content-description"] div[class="content-title"]'
-link_selector = 'div[class="quick-view-btn"]>a'
-price_selector = 'div[class="content-description"] div[class="content-price"]'
+brand_selector = ''
+info_selector = ''
+link_selector = ''
+price_selector = ''
 
-url="https://www.furniture-republic.com.ph/product-category/bar-chair-stool"
+url=""
 
-site_name="furniturerepublicph"
+site_name=""
 
 scraper = Scraper(
     brand_selector=brand_selector,
@@ -22,7 +21,11 @@ scraper = Scraper(
     site_name=site_name
 )
 
-scraper.load_url()
-scraper.get_page()
-scraper.save_file()
-scraper.close()
+# Common Usage 
+#
+# scraper.load_url()
+# scraper.get_page()
+# scraper.save_file()
+# scraper.close()
+
+concat_all_csv(foldername=site_name, filename="all")
