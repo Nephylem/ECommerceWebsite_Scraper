@@ -76,6 +76,7 @@ class Scraper():
             print("length brand: " + str(len(data['brand'])))
             print("length price: " + str(len(data['brand_price'])))
             print("length link: " + str(len(data['link'])))
+            print(f"current url: {self.browser.current_url}")
         except:
             '***elements not found on this page***'
     def next_page(self, xpath=False):
@@ -118,12 +119,16 @@ class Scraper():
         save_path = os.path.join(BASE_PATH, f"output/{site_name}/trash")
 
         os.makedirs(save_path, exist_ok=True)
-        pd.DataFrame(item).to_csv(os.path.join(save_path, f"{self.file_name}.csv"), index=False)
-        
-        
-        print(f"scrapped {self.browser.current_url}\n and file saved to {save_path}")
-        print("*" * 100)
-
+        try:
+            pd.DataFrame(item).to_csv(os.path.join(save_path, f"{self.file_name}.csv"), index=False)
+            
+            
+            print(f"scrapped {self.browser.current_url}\n and file saved to {save_path}")
+            print("*" * 100)
+        except: 
+            "****dataframe must have the same link****"
+            "****review your css selectors****"
+            print("*" * 100)
 
     
     def close(self):
