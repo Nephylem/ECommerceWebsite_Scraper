@@ -126,8 +126,8 @@ class Scraper():
             print(f"scrapped {self.browser.current_url}\n and file saved to {save_path}")
             print("*" * 100)
         except: 
-            "****dataframe must have the same link****"
-            "****review your css selectors****"
+            print("****dataframe must have the same link****")
+            print("****review your css selectors****")
             print("*" * 100)
 
     
