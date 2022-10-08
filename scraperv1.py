@@ -175,9 +175,6 @@ class Scraper():
                 
                 self.get_page()
                 self.save_file()
-            
-                
-
 
     def extract_link(self, selector=str()):
 
@@ -217,6 +214,8 @@ class Scraper():
 
         print("Links length: " + str(len(self.links)))
 
+        os.makedirs(os.path.join(BASE_PATH, f"output/{self.site_name}/trash"), exist_ok=True)
+
         path_to_text = os.path.join(BASE_PATH, f"output/{self.site_name}/trash/{self.site_name}.txt")
         with open(path_to_text, "w") as write:
             write.write(str(self.links))
@@ -226,11 +225,7 @@ class Scraper():
     def extract_more_links(self, iteration=5):
         for _ in range(iteration):
             self.check_each_link()
-
-        path_to_text = os.path.join(BASE_PATH, f"output/{self.site_name}/trash/{self.site_name}.txt")
-        with open(path_to_text, "w") as write:
-            write.write(str(self.links))
-            write.close()              
+          
 
 
 
