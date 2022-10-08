@@ -74,6 +74,7 @@ class Scraper():
         print("length brand: " + str(len(data['brand'])))
         print("length price: " + str(len(data['brand_price'])))
         print("length link: " + str(len(data['link'])))
+        print(f"current url: {self.browser.current_url}")
 
     def next_page(self, xpath=False):
         """press site next page"""
