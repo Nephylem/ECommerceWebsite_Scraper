@@ -36,6 +36,7 @@ class Scraper():
 
         self.selector = ""
         self.file_name = ""
+        self.items = None
 
         self.links = set()
         self.browser_wait = WebDriverWait(self.browser, 10)
@@ -72,13 +73,13 @@ class Scraper():
 
             data = self.items['product list']
 
-
             print("length brand: " + str(len(data['brand'])))
             print("length price: " + str(len(data['brand_price'])))
             print("length link: " + str(len(data['link'])))
             print(f"current url: {self.browser.current_url}")
         except:
-            '***elements not found on this page***'
+            print('***elements not found on this page***')
+
     def next_page(self, xpath=False):
         """press site next page"""
 
@@ -114,19 +115,21 @@ class Scraper():
     def save_file(self):
         """saves the scraped data from get_page function to .csv"""
         site_name = self.site_name
-        item = self.items['product list']
-        
         save_path = os.path.join(BASE_PATH, f"output/{site_name}/trash")
-
+        
         os.makedirs(save_path, exist_ok=True)
+
         try:
+            item = self.items['product list']
             pd.DataFrame(item).to_csv(os.path.join(save_path, f"{self.file_name}.csv"), index=False)
             
-            
-            print(f"scrapped {self.browser.current_url}\n and file saved to {save_path}")
+            print("*" * 100)
+            print(f"scrapped {self.browser.current_url}")
+            print(f"file saved to {os.path.join(save_path, self.file_name)}.csv")
             print("*" * 100)
         except: 
-            print("****dataframe must have the same link****")
+            print("*" * 100)
+            print("****dataframe must have the same length****")
             print("****review your css selectors****")
             print("*" * 100)
 
