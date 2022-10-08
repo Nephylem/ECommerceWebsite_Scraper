@@ -46,35 +46,37 @@ class Scraper():
         self.browser.get(url)
 
     def get_page(self):     
-        brands_element = self.browser_wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.brand_selector)))
-        brand_info_element = self.browser_wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.info_selector)))
-        brand_price_element = self.browser_wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.price_selector)))
-        link_element = self.browser_wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.link_selector)))
-        
-        
-        brand = [brand.text.title() for brand in brands_element]
-        info = [info.text.title() for info in brand_info_element]
-        price = [price.text for price in brand_price_element]
-        link = [link.get_attribute('href') for link in link_element]
+        try:
+            brands_element = self.browser_wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.brand_selector)))
+            brand_info_element = self.browser_wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.info_selector)))
+            brand_price_element = self.browser_wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.price_selector)))
+            link_element = self.browser_wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.link_selector)))
+            
+            
+            brand = [brand.text.title() for brand in brands_element]
+            info = [info.text.title() for info in brand_info_element]
+            price = [price.text for price in brand_price_element]
+            link = [link.get_attribute('href') for link in link_element]
 
-        self.items = {
-            "product list" : {
-                "brand" : brand, 
-                "brand_info" : info, 
-                "brand_price" : price,
-                "link" : link
+            self.items = {
+                "product list" : {
+                    "brand" : brand, 
+                    "brand_info" : info, 
+                    "brand_price" : price,
+                    "link" : link
+                }
             }
-        }
 
-        current_url = urlparse(self.browser.current_url)
-        self.file_name = "_".join((current_url.path + current_url.query).split("/"))
+            current_url = urlparse(self.browser.current_url)
+            self.file_name = "_".join((current_url.path + current_url.query).split("/"))
 
-        data = self.items['product list']
+            data = self.items['product list']
 
-        print("length brand: " + str(len(data['brand'])))
-        print("length price: " + str(len(data['brand_price'])))
-        print("length link: " + str(len(data['link'])))
-
+            print("length brand: " + str(len(data['brand'])))
+            print("length price: " + str(len(data['brand_price'])))
+            print("length link: " + str(len(data['link'])))
+        except:
+            '***elements not found on this page***'
     def next_page(self, xpath=False):
         """press site next page"""
 
@@ -118,7 +120,7 @@ class Scraper():
         pd.DataFrame(item).to_csv(os.path.join(save_path, f"{self.file_name}.csv"), index=False)
         
         
-        print(f"scrapped {self.browser.current_url}")
+        print(f"scrapped {self.browser.current_url}\n and file saved to {save_path}")
         print("*" * 100)
 
 
@@ -149,11 +151,10 @@ class Scraper():
                         time.sleep(1)
                         self.press_end()
                 
-                try:
-                    self.get_page()
-                    self.save_file()
-                except:
-                    print('****No Content****')
+                
+                self.get_page()
+                self.save_file()
+            
         else:            
             for url in self.links:
                 self.load_url(url)
@@ -162,11 +163,11 @@ class Scraper():
                         time.sleep(1)
                         self.press_end()
                 
-                try:
-                    self.get_page()
-                    self.save_file()
-                except:
-                    print('****No Content****')
+                
+                self.get_page()
+                self.save_file()
+            
+                
 
 
     def extract_link(self, selector=str()):
