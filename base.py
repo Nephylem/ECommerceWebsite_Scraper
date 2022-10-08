@@ -21,11 +21,10 @@ scraper = Scraper(
     site_name=site_name
 )
 
-# Common Usage 
-#
-# scraper.load_url()
-# scraper.get_page()
-# scraper.save_file()
+
+# selector = ""
+# scraper.extract_link(selector=selector)
+# scraper.follow_links()
 # scraper.close()
 
 concat_all_csv(foldername=site_name, filename="all")
