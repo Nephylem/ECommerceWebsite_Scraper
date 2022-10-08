@@ -232,7 +232,7 @@ class Scraper():
 """A function to clean scraped csv file from Scraper object"""
 
 
-def concat_all_csv(foldername, filename, brand=False):
+def concat_all_csv(foldername, filename, brand=False, price_replace=None):
 
     pattern = "\d{1,}\,\d{3,}\.\d{2}|\d{3}\.\d{2}|\d{1,}\,\d{3,}|\d{2,}|\d{2,}\.\d{2}|\d"
     trash_path = os.path.join(BASE_PATH, f"output/{foldername}/trash")
@@ -244,8 +244,15 @@ def concat_all_csv(foldername, filename, brand=False):
     dataframe.drop_duplicates(inplace=True)
     if brand:
         dataframe['brand'] = dataframe['brand'].apply(lambda x: x.replace(x, foldername.title()))
-    dataframe['brand_price'] = dataframe['brand_price'].apply(lambda x: float("".join((re.findall(string=x, pattern=pattern)[-1]).split(','))))
-    
+
+    if price_replace:
+        dataframe['brand_price'] = dataframe['brand_price'].apply(lambda x: '0' if(x ==price_replace) else x)
+
+    try:    
+        dataframe['brand_price'] = dataframe['brand_price'].apply(lambda x: float("".join((re.findall(string=x, pattern=pattern)[-1]).split(','))))
+    except IndexError:
+        print("***Index Error***")
+        print("***use price_replace param***")
         
     dataframe.sort_values(by="brand_price").to_csv(save_to_path, index=False)
 
