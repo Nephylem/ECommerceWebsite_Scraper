@@ -233,8 +233,14 @@ class Scraper():
 
 
 def concat_all_csv(foldername, filename, brand=False, price_replace=None):
+    def cleanpricevalue(x):
+        x = x.replace(".", ",").replace(",", "")
+        pattern = "\d{1,}\,\d{3,}\.\d{2}|\d{3}\.\d{2}|\d{1,}\,\d{3,}|\d{2,}|\d{2,}\.\d{2}|\d"
+        match = re.findall(string=x, pattern=pattern)[-1]
+        fprice = match[:-2] + '.' + match[-2:] 
+        return float(fprice)
 
-    pattern = "\d{1,}\,\d{3,}\.\d{2}|\d{3}\.\d{2}|\d{1,}\,\d{3,}|\d{2,}|\d{2,}\.\d{2}|\d"
+    
     trash_path = os.path.join(BASE_PATH, f"output/{foldername}/trash")
     csv_abspath = [os.path.join(trash_path, file) for file in os.listdir(trash_path)]
     save_to_path = os.path.join(BASE_PATH, f"output/{foldername}/{filename}.csv")
@@ -248,11 +254,16 @@ def concat_all_csv(foldername, filename, brand=False, price_replace=None):
     if price_replace:
         dataframe['brand_price'] = dataframe['brand_price'].apply(lambda x: '0' if(x ==price_replace) else x)
 
-    try:    
-        dataframe['brand_price'] = dataframe['brand_price'].apply(lambda x: float("".join((re.findall(string=x, pattern=pattern)[-1]).split(','))))
+    try:   
+    #     pattern = "\d{1,}\,\d{3,}\.\d{2}|\d{3}\.\d{2}|\d{1,}\,\d{3,}|\d{2,}|\d{2,}\.\d{2}|\d|\d{3,}.\d{3,}.\d{1,}|\d{2,}.\d{3,}.\d{1,}|\d{1,}.\d{3,}.\d{1,}"
+    #     dataframe['brand_price'] = dataframe['brand_price'].apply(lambda x: float("".join((re.findall(string=x, pattern=pattern)[-1]).split(','))))
+ 
+        dataframe['brand_price'] = dataframe['brand_price'].apply(cleanpricevalue)
+
     except IndexError:
         print("***Index Error***")
         print("***use price_replace param***")
+
         
     dataframe.sort_values(by="brand_price").to_csv(save_to_path, index=False)
 
